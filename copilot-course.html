@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Copilot Briefing — An Executive Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F1E8;
+    --paper-card:#FBF9F3;
+    --ink:#1C2333;
+    --ink-soft:#4A5066;
+    --navy:#1F2A44;
+    --navy-light:#2E3B5C;
+    --brass:#A9824C;
+    --brass-dark:#7C5E33;
+    --brass-light:#E9DCC3;
+    --line:#DAD3BF;
+    --forest:#3F6B4A;
+    --forest-light:#E4EBE3;
+    --rust:#9B4A3A;
+    --rust-light:#F1E1DC;
+    --radius:10px;
+    --shadow: 0 1px 2px rgba(28,35,51,0.06), 0 4px 16px rgba(28,35,51,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,.serif{font-family:'Newsreader',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  ::selection{background:var(--brass-light);}
+
+  a{color:var(--brass-dark);}
+
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- App shell ---------- */
+  .app-shell{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    max-width:1180px;
+    margin:0 auto;
+    min-height:100vh;
+  }
+  @media (max-width:860px){
+    .app-shell{grid-template-columns:1fr;}
+    .sidebar{position:static;order:2;border-right:none;border-top:1px solid var(--line);}
+    .main{order:1;}
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background:var(--navy);
+    color:#EDE8DA;
+    padding:28px 20px 40px;
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    overflow-y:auto;
+    border-right:1px solid var(--line);
+  }
+  @media (max-width:860px){ .sidebar{ height:auto; position:static; } }
+
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .brand-mark{
+    width:26px;height:26px;border-radius:50%;
+    border:1.5px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--brass);
+    flex:none;
+  }
+  .brand-name{font-size:14px;font-weight:500;letter-spacing:0.02em;color:#EDE8DA;}
+  .brand-sub{font-size:11px;color:#9FA6BD;margin:2px 0 22px 34px;letter-spacing:0.04em;text-transform:uppercase;}
+
+  .progress-block{margin-bottom:26px;}
+  .progress-label{
+    display:flex;justify-content:space-between;
+    font-size:11px;color:#9FA6BD;margin-bottom:6px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .progress-track{
+    height:4px;background:rgba(255,255,255,0.12);border-radius:2px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;background:var(--brass);border-radius:2px;
+    transition:width .4s ease;
+  }
+
+  .nav-list{list-style:none;margin:0;padding:0;}
+  .nav-item{margin-bottom:2px;}
+  .nav-btn{
+    width:100%;
+    display:flex;align-items:center;gap:10px;
+    background:none;border:none;
+    color:#C9CEDE;
+    text-align:left;
+    padding:9px 8px;
+    border-radius:6px;
+    font-size:13.5px;
+    line-height:1.35;
+  }
+  .nav-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
+  .nav-btn.active{background:rgba(169,130,76,0.18);color:#fff;}
+  .nav-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:#7C87A6;
+    width:18px;flex:none;
+  }
+  .nav-btn.active .nav-num{color:var(--brass);}
+  .nav-stamp{
+    margin-left:auto;flex:none;
+    width:16px;height:16px;
+    border-radius:50%;
+    border:1.3px solid var(--forest);
+    color:var(--forest);
+    display:none;
+    align-items:center;justify-content:center;
+    font-size:10px;
+  }
+  .nav-item.done .nav-stamp{display:flex;background:rgba(63,107,74,0.15);}
+
+  .sidebar-foot{
+    margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.1);
+    font-size:11.5px;color:#8992AC;line-height:1.6;
+  }
+
+  /* ---------- Main ---------- */
+  .main{padding:44px 56px 90px;}
+  @media (max-width:860px){ .main{padding:32px 22px 70px;} }
+
+  /* Cover */
+  .cover{max-width:640px;}
+  .cover-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--brass-dark);margin-bottom:18px;
+  }
+  .cover h1{font-size:44px;font-weight:500;line-height:1.12;margin:0 0 16px;}
+  .cover .lede{font-size:17px;color:var(--ink-soft);line-height:1.65;margin:0 0 30px;}
+  .cover .attrib{
+    font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);
+    padding-top:16px;margin-bottom:34px;
+  }
+  .begin-btn{
+    background:var(--navy);color:#fff;border:none;
+    padding:13px 26px;border-radius:6px;
+    font-size:14.5px;font-weight:500;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .begin-btn:hover{background:var(--navy-light);}
+
+  .cover-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px;
+  }
+  @media (max-width:600px){ .cover-grid{grid-template-columns:1fr;} }
+  .cover-card{
+    border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+    background:var(--paper-card);
+  }
+  .cover-card .n{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-dark);}
+  .cover-card p{font-size:13px;margin:6px 0 0;color:var(--ink-soft);line-height:1.5;}
+
+  /* Module header */
+  .mod-eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--brass-dark);margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .mod-header h2{font-size:32px;font-weight:500;margin:0 0 12px;line-height:1.18;}
+  .mod-dek{font-size:16px;color:var(--ink-soft);line-height:1.7;max-width:620px;margin:0 0 30px;}
+
+  .mod-body{max-width:640px;}
+  .mod-body p{font-size:15.5px;line-height:1.75;color:var(--ink);margin:0 0 16px;}
+  .mod-body ul{padding-left:20px;margin:0 0 16px;}
+  .mod-body li{font-size:15.5px;line-height:1.7;margin-bottom:8px;color:var(--ink);}
+  .mod-body strong{font-weight:600;}
+
+  /* Callout cards */
+  .card{
+    background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;margin:0 0 16px;
+  }
+  .card h3{font-size:15px;font-weight:600;font-family:'Inter';margin:0 0 6px;}
+  .card p{margin:0;font-size:14.5px;color:var(--ink-soft);}
+
+  .fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 22px;}
+  @media (max-width:600px){ .fact-grid{grid-template-columns:1fr;} }
+
+  /* Prompt box */
+  .prompt-box{
+    background:var(--navy);color:#F0EDE2;
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 14px;
+    position:relative;
+  }
+  .prompt-box .label{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--brass);
+    text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block;
+  }
+  .prompt-box p{
+    font-family:'Newsreader',serif;font-style:italic;font-size:15.5px;
+    line-height:1.6;margin:0;padding-right:76px;color:#F0EDE2;
+  }
+  .copy-btn{
+    position:absolute;top:14px;right:14px;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);
+    color:#EDE8DA;font-size:11.5px;padding:6px 11px;border-radius:5px;
+  }
+  .copy-btn:hover{background:rgba(255,255,255,0.16);}
+  .copy-btn.copied{background:var(--forest);border-color:var(--forest);color:#fff;}
+
+  /* Timeline (30 days) */
+  .timeline{border-left:2px solid var(--line);padding-left:22px;margin:8px 0 22px;}
+  .tl-item{margin-bottom:22px;position:relative;}
+  .tl-item::before{
+    content:'';position:absolute;left:-27.5px;top:4px;
+    width:9px;height:9px;border-radius:50%;background:var(--brass);
+    border:2px solid var(--paper);
+  }
+  .tl-week{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-dark);text-transform:uppercase;letter-spacing:0.06em;}
+  .tl-item h4{font-size:16px;margin:4px 0 4px;font-weight:600;font-family:'Inter';}
+  .tl-item p{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.6;}
+
+  /* App sub-cards for module 7 */
+  .app-cards{display:flex;flex-direction:column;gap:14px;margin:0 0 20px;}
+  .app-card{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--paper-card);}
+  .app-card h4{margin:0 0 6px;font-size:15.5px;font-weight:600;font-family:'Inter';}
+  .app-card p{margin:0 0 12px;font-size:14px;color:var(--ink-soft);line-height:1.6;}
+
+  /* Formula builder */
+  .builder{border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-card);padding:20px;margin:0 0 20px;}
+  .builder-row{margin-bottom:12px;}
+  .builder-row label{
+    display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:0.06em;color:var(--brass-dark);margin-bottom:5px;
+  }
+  .builder-row input{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;
+    font-size:14px;font-family:'Inter';background:#fff;color:var(--ink);
+  }
+  .builder-row input:focus{outline:2px solid var(--brass-light);border-color:var(--brass);}
+  .builder-preview{
+    margin-top:14px;background:var(--navy);color:#F0EDE2;border-radius:8px;padding:14px 16px;
+    font-family:'Newsreader',serif;font-style:italic;font-size:15px;line-height:1.6;min-height:22px;
+  }
+
+  /* Quick check */
+  .quiz{border:1px solid var(--brass-light);background:#FEFBF3;border-radius:var(--radius);padding:18px 20px;margin:8px 0 24px;}
+  .quiz .qhead{
+    display:flex;align-items:center;gap:8px;margin-bottom:12px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--brass-dark);
+  }
+  .quiz .qtext{font-size:15px;font-weight:500;margin:0 0 12px;}
+  .qopt{
+    display:block;width:100%;text-align:left;
+    border:1px solid var(--line);background:#fff;border-radius:7px;
+    padding:10px 13px;margin-bottom:8px;font-size:14px;color:var(--ink);
+  }
+  .qopt:hover{border-color:var(--brass);}
+  .qopt.correct{border-color:var(--forest);background:var(--forest-light);color:#25452F;}
+  .qopt.wrong{border-color:var(--rust);background:var(--rust-light);color:#6E2E22;}
+  .qopt:disabled{cursor:default;}
+  .qexplain{font-size:13.5px;color:var(--ink-soft);margin-top:8px;line-height:1.6;display:none;}
+  .qexplain.show{display:block;}
+
+  /* Footer nav */
+  .mod-footer{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:36px;padding-top:22px;border-top:1px solid var(--line);
+    max-width:640px;
+  }
+  .foot-nav{display:flex;gap:10px;}
+  .btn{
+    border:1px solid var(--line);background:var(--paper-card);color:var(--ink);
+    padding:9px 16px;border-radius:6px;font-size:13.5px;font-weight:500;
+  }
+  .btn:hover{border-color:var(--ink-soft);}
+  .btn:disabled{opacity:0.35;cursor:default;}
+  .btn:disabled:hover{border-color:var(--line);}
+  .btn-complete{
+    background:var(--forest);color:#fff;border-color:var(--forest);
+    display:flex;align-items:center;gap:7px;
+  }
+  .btn-complete:hover{background:#345A3D;}
+  .btn-complete.is-done{background:var(--paper-card);color:var(--forest);border-color:var(--forest);}
+
+  .stamp-mark{
+    width:15px;height:15px;border:1.5px solid currentColor;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;font-size:10px;
+  }
+
+  /* Completion view */
+  .completion{max-width:600px;text-align:left;}
+  .seal{
+    width:78px;height:78px;border-radius:50%;border:2px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--brass-dark);
+    text-align:center;line-height:1.3;letter-spacing:0.04em;text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .resource-list{list-style:none;padding:0;margin:18px 0 0;}
+  .resource-list li{
+    display:flex;justify-content:space-between;gap:12px;
+    padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;
+  }
+  .resource-list li span:first-child{color:var(--ink);}
+  .resource-list li span:last-child{color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <nav class="sidebar" aria-label="Course modules">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div class="brand-name">The Copilot Briefing</div>
+    </div>
+    <div class="brand-sub">Executive course</div>
+
+    <div class="progress-block">
+      <div class="progress-label"><span>Progress</span><span id="progress-count">0 / 11</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <ul class="nav-list" id="nav-list"></ul>
+
+    <div class="sidebar-foot">
+      Based on the Executive Playbook for Microsoft 365 Copilot Premium. Your place in the briefing is saved automatically.
+    </div>
+  </nav>
+
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const MODULES = [
+  {
+    id:'why', num:'01', title:'Why this matters', eyebrow:'Orientation',
+    dek:'Most of a leader\u2019s day goes to keeping up. This module reframes what Copilot Premium is actually for.',
+    body:`
+      <p>Your inbox, your meetings, and your documents already hold more than you can read. Copilot Premium does the reading, drafting, and prep so your time goes to judgment, direction, and the people who need you. Think of it less as a chatbot and more as a chief of staff who happens to live inside Outlook, Word, Excel, PowerPoint, and Teams.</p>
+      <p>The distinction that matters most: Premium works from <strong>your actual work</strong>, not the public web. It reads across your email, meetings, documents, and calendar, inside your company's own security boundary. That's the difference between a tool that sounds smart and one that actually knows what's going on in your organization.</p>
+      <div class="fact-grid">
+        <div class="card"><h3>It knows your work</h3><p>Ask about a thread, a customer, a project, or a document by name and Copilot reads across your Microsoft 365 content to answer.</p></div>
+        <div class="card"><h3>It works where you work</h3><p>Built into the apps you already use, plus one Copilot Chat front door. No new tool to learn.</p></div>
+        <div class="card"><h3>It sounds like you</h3><p>Set it up once and it drafts in your voice, so less of what it produces needs a rewrite.</p></div>
+        <div class="card"><h3>It stays private</h3><p>Your prompts and data stay inside your tenant, under enterprise protection.</p></div>
+      </div>`,
+    quiz:{
+      q:'What actually separates Copilot Premium from a general AI chatbot?',
+      options:['It has a nicer interface','It reads your own Microsoft 365 content inside your tenant, not the open web','It is only available on mobile'],
+      correct:1,
+      explain:'Premium\u2019s edge is grounding: it answers from your real email, files, and meetings inside your company\u2019s security boundary, rather than general web knowledge.'
+    }
+  },
+  {
+    id:'safety', num:'02', title:'Is my data safe?', eyebrow:'Trust and governance',
+    dek:'The question every leader should ask before typing a single prompt \u2014 answered plainly.',
+    body:`
+      <p>This is worth settling early, because hesitation here is the biggest reason adoption stalls. The short version: Copilot works on your real work, not the open internet, and that work never leaves your tenant.</p>
+      <ul>
+        <li><strong>Your data stays in your tenant.</strong> Copilot Premium runs inside your Microsoft 365 boundary, protected by the same enterprise encryption and access controls as the rest of your data.</li>
+        <li><strong>It doesn't train public models.</strong> Your prompts, documents, and Copilot's responses are never used to train the foundation models behind it.</li>
+        <li><strong>It only sees what you can see.</strong> Copilot respects your existing permissions. It can't surface a file you don't already have access to.</li>
+        <li><strong>You have controls and an audit trail.</strong> Microsoft Purview gives IT and compliance visibility, data-loss-prevention policies, and audit logs across Copilot activity.</li>
+      </ul>
+      <div class="card"><h3>For regulated industries</h3><p>If you operate under HIPAA or a similar framework, ask your IT team about what changes when web search is involved and what your BAA does and doesn't cover \u2014 it's a distinct question from tenant security.</p></div>`,
+    quiz:{
+      q:'True or false: Copilot can surface a file you don\u2019t already have permission to open.',
+      options:['True','False'],
+      correct:1,
+      explain:'Copilot strictly respects existing permissions \u2014 it never grants access beyond what you already have.'
+    }
+  },
+  {
+    id:'find', num:'03', title:'Where to find Copilot', eyebrow:'Getting oriented',
+    dek:'The most common reason new users stall isn\u2019t the tool \u2014 it\u2019s that they can\u2019t find the door in.',
+    body:`
+      <p>There are four doors into Copilot Premium, and you'll likely settle into one or two as habits.</p>
+      <div class="fact-grid">
+        <div class="card"><h3>The Copilot app</h3><p>Your front door. Open the icon in Teams, on your taskbar, or go to m365.cloud.microsoft. Ask it anything about your work.</p></div>
+        <div class="card"><h3>Inside each app</h3><p>Look for the Copilot button in the ribbon of Outlook, Word, Excel, and PowerPoint. It works on the document in front of you.</p></div>
+        <div class="card"><h3>In your meetings</h3><p>In Teams meetings, Copilot can recap what was said, list decisions, and pull action items \u2014 even if you joined late.</p></div>
+        <div class="card"><h3>On your phone</h3><p>The Microsoft 365 Copilot mobile app puts the same assistant in your pocket for between-meeting moments.</p></div>
+      </div>
+      <p>The fastest-growing habit among executives isn't typing \u2014 it's talking. Open the app on your phone, tap the voice button, and ask out loud between meetings or in the car.</p>
+      <div class="prompt-box">
+        <span class="label">Try it \u2014 out loud, on mobile</span>
+        <p>"What are my three most important emails today, and what does each one need from me?"</p>
+        <button class="copy-btn" data-copy="What are my three most important emails today, and what does each one need from me?">Copy</button>
+      </div>
+      <div class="prompt-box">
+        <span class="label">Try it \u2014 out loud, on mobile</span>
+        <p>"Catch me up on my Teams chats from this afternoon. What did I miss and what needs a reply?"</p>
+        <button class="copy-btn" data-copy="Catch me up on my Teams chats from this afternoon. What did I miss and what needs a reply?">Copy</button>
+      </div>`,
+    quiz:{
+      q:'Where are executives increasingly getting the most value from Copilot Premium?',
+      options:['Voice mode on the mobile app','Only inside PowerPoint','Through a browser extension'],
+      correct:0,
+      explain:'Talking to Copilot on mobile \u2014 between meetings or in the car \u2014 is the fastest-growing usage pattern among executives.'
+    }
+  },
+  {
+    id:'firstwin', num:'04', title:'Your first 5-minute win', eyebrow:'Hands-on start',
+    dek:'Don\u2019t try to learn Copilot. Give it one job today, and you\u2019ll have a useful answer in under a minute.',
+    body:`
+      <p>Open the Copilot app and try one of these. Swap in real names from your world \u2014 a colleague, a project, a topic \u2014 and see what comes back.</p>
+      <div class="prompt-box">
+        <span class="label">Catch up fast</span>
+        <p>"Catch me up on my email thread with [name] about [topic]. Summarize what was decided and tell me what I still owe them."</p>
+        <button class="copy-btn" data-copy="Catch me up on my email thread with [name] about [topic]. Summarize what was decided and tell me what I still owe them.">Copy</button>
+      </div>
+      <div class="prompt-box">
+        <span class="label">Clear the inbox</span>
+        <p>"What are the most important emails I received in the last 24 hours that need my response? Group them by urgency and keep it short."</p>
+        <button class="copy-btn" data-copy="What are the most important emails I received in the last 24 hours that need my response? Group them by urgency and keep it short.">Copy</button>
+      </div>
+      <div class="prompt-box">
+        <span class="label">Walk in ready</span>
+        <p>"Prepare me for my next meeting. Summarize recent emails and documents with the attendees and what we agreed last time."</p>
+        <button class="copy-btn" data-copy="Prepare me for my next meeting. Summarize recent emails and documents with the attendees and what we agreed last time.">Copy</button>
+      </div>
+      <p>Start with one win, not forty features. The habit matters more than the breadth on day one.</p>`,
+    quiz:null
+  },
+  {
+    id:'formula', num:'05', title:'The prompt formula', eyebrow:'Core skill',
+    dek:'A good prompt has four parts \u2014 the same four things you\u2019d cover briefing a sharp assistant.',
+    body:`
+      <p>Don't learn the tool \u2014 give it a job. Every strong prompt covers goal, context, source, and format.</p>
+      <div class="fact-grid">
+        <div class="card"><h3>Goal</h3><p>What you want. "Draft a reply," "summarize this," "find the risks."</p></div>
+        <div class="card"><h3>Context</h3><p>Who it's for and why. "For my board," "for a non-technical audience."</p></div>
+        <div class="card"><h3>Source</h3><p>What to use. "From this thread," "using the attached document."</p></div>
+        <div class="card"><h3>Format</h3><p>How you want it back. "One page," "five bullets," "a short email in my tone."</p></div>
+      </div>
+      <p><strong>Weak prompt, weak answer:</strong> "Write something about the vendor meeting."</p>
+      <p><strong>Same request, with all four parts:</strong> "Draft a short update for my leadership team from the notes of yesterday's vendor meeting. Plain language, five bullets, decisions and next steps only."</p>
+      <p>Try building your own below \u2014 fill in each part and watch the prompt assemble itself.</p>
+      <div class="builder">
+        <div class="builder-row"><label for="b-goal">Goal</label><input id="b-goal" type="text" placeholder="Draft a reply to the client"></div>
+        <div class="builder-row"><label for="b-context">Context</label><input id="b-context" type="text" placeholder="for a first-time customer, keep it warm"></div>
+        <div class="builder-row"><label for="b-source">Source</label><input id="b-source" type="text" placeholder="using this email thread"></div>
+        <div class="builder-row"><label for="b-format">Format</label><input id="b-format" type="text" placeholder="under 150 words, one clear next step"></div>
+        <div class="builder-preview" id="b-preview">Your assembled prompt will appear here as you type.</div>
+      </div>`,
+    quiz:{
+      q:'Which part of the formula is most often missing from a weak prompt?',
+      options:['All four are usually stated \u2014 the model just misunderstands them','Context and format \u2014 the reader and the shape of the answer','The prompt length'],
+      correct:1,
+      explain:'Most weak prompts state a goal but skip who it\u2019s for and how it should come back \u2014 exactly what turns a vague draft into a usable one.'
+    }
+  },
+  {
+    id:'chiefofstaff', num:'06', title:'Copilot as your chief of staff', eyebrow:'Personalization',
+    dek:'The gap between a helpful tool and a trusted operator is personalization. Fifteen minutes here changes everything after.',
+    body:`
+      <p>Four moves turn Copilot from a generic assistant into one that thinks at your altitude:</p>
+      <div class="timeline">
+        <div class="tl-item"><span class="tl-week">Step 1</span><h4>Tell it who you are</h4><p>Give Copilot a short profile: your role, your priorities, how you like things written, what you care about.</p></div>
+        <div class="tl-item"><span class="tl-week">Step 2</span><h4>Let it remember</h4><p>Copilot Memory keeps your context so you don't repeat yourself every session.</p></div>
+        <div class="tl-item"><span class="tl-week">Step 3</span><h4>Give it a standing job</h4><p>Build a reusable agent that protects your time and thinks at your altitude \u2014 a Chief of Staff agent, set up once.</p></div>
+        <div class="tl-item"><span class="tl-week">Step 4</span><h4>Put it on a schedule</h4><p>Scheduled prompts run on their own \u2014 a morning brief waiting before you open your laptop. That's the chief-of-staff move: it comes to you.</p></div>
+      </div>
+      <p>Four agents worth building first:</p>
+      <div class="fact-grid">
+        <div class="card"><h3>Chief of Staff</h3><p>Protects your time, thinks at your altitude, and sounds like you.</p></div>
+        <div class="card"><h3>BossBuddy</h3><p>A virtual AI manager for strategy and career-level thinking.</p></div>
+        <div class="card"><h3>Taskmaster</h3><p>Tracks what needs attention and gives strategic guidance to move work forward.</p></div>
+        <div class="card"><h3>Impact Check</h3><p>Summarizes and links your activity so you can see your real influence on projects and people.</p></div>
+      </div>`,
+    quiz:null
+  },
+  {
+    id:'byapp', num:'07', title:'By app: where the time comes back', eyebrow:'Applied use',
+    dek:'Same assistant, tuned to whatever\u2019s in front of you. Real prompts you can steal today.',
+    body:`
+      <div class="app-cards">
+        <div class="app-card">
+          <h4>Outlook \u2014 your inbox on your terms</h4>
+          <p>Triage the morning, summarize a long thread in seconds, draft replies in your tone, and prep for meetings without digging.</p>
+          <div class="prompt-box"><span class="label">Try it</span><p>"Summarize this thread and draft a reply that agrees to the timeline but asks for the budget in writing. Keep my tone direct and warm."</p><button class="copy-btn" data-copy="Summarize this thread and draft a reply that agrees to the timeline but asks for the budget in writing. Keep my tone direct and warm.">Copy</button></div>
+        </div>
+        <div class="app-card">
+          <h4>Word \u2014 from blank page to board-ready</h4>
+          <p>Draft a document from your own files, rewrite for a specific audience, or compress a 20-page report into a page a busy board will actually read.</p>
+          <div class="prompt-box"><span class="label">Try it</span><p>"Draft a one-page board update from these three documents. Plain language for a non-technical audience, decisions and risks up front."</p><button class="copy-btn" data-copy="Draft a one-page board update from these three documents. Plain language for a non-technical audience, decisions and risks up front.">Copy</button></div>
+        </div>
+        <div class="app-card">
+          <h4>Excel \u2014 answers without the formulas</h4>
+          <p>Point Copilot at a spreadsheet and ask what's happening in plain English. It surfaces trends and writes the formula so you don't have to.</p>
+          <div class="prompt-box"><span class="label">Try it</span><p>"Analyze this spreadsheet. What are the three trends I should care about, and what looks off or inconsistent?"</p><button class="copy-btn" data-copy="Analyze this spreadsheet. What are the three trends I should care about, and what looks off or inconsistent?">Copy</button></div>
+        </div>
+        <div class="app-card">
+          <h4>PowerPoint \u2014 a deck from what you already wrote</h4>
+          <p>Turn a document into a first-draft deck, summarize a long presentation to five slides, or rewrite a cluttered slide so it lands.</p>
+          <div class="prompt-box"><span class="label">Try it</span><p>"Create a five-slide executive summary from this document. One idea per slide, plain headlines, no jargon."</p><button class="copy-btn" data-copy="Create a five-slide executive summary from this document. One idea per slide, plain headlines, no jargon.">Copy</button></div>
+        </div>
+        <div class="app-card">
+          <h4>Teams \u2014 never walk in behind</h4>
+          <p>Copilot recaps a meeting you missed, catches you up on a busy chat, and turns discussion into decisions and owners.</p>
+          <div class="prompt-box"><span class="label">Try it</span><p>"Recap this meeting. Give me the decisions, the open questions, and who owns each next step."</p><button class="copy-btn" data-copy="Recap this meeting. Give me the decisions, the open questions, and who owns each next step.">Copy</button></div>
+        </div>
+      </div>`,
+    quiz:{
+      q:'You just returned from a two-day trip and missed a Teams meeting. What\u2019s the fastest way back up to speed?',
+      options:['Read the full transcript line by line','Ask Copilot to recap the meeting for decisions, open questions, and owners','Wait for someone to email you a summary'],
+      correct:1,
+      explain:'A recap prompt turns an hour of discussion into the three things you actually need: what was decided, what\u2019s unresolved, and who owns what next.'
+    }
+  },
+  {
+    id:'perspectives', num:'08', title:'Perspectives and insights', eyebrow:'Judgment support',
+    dek:'A second set of eyes that never gets tired \u2014 or tells you only what you want to hear.',
+    body:`
+      <div class="fact-grid">
+        <div class="card"><h3>Contextual Filter</h3><p>Read any document through the lens of a specific role and surface only what matters to that seat.</p></div>
+        <div class="card"><h3>Devil's Advocate</h3><p>Surface the three most likely reasons a proposal fails before you walk into the room.</p></div>
+        <div class="card"><h3>Voice Distiller</h3><p>Mine your own past writing into a leadership style Copilot can draft in.</p></div>
+      </div>
+      <div class="prompt-box">
+        <span class="label">Read as a role</span>
+        <p>"Read this document as my CFO. Surface only the financial risks and the questions I should be ready to answer."</p>
+        <button class="copy-btn" data-copy="Read this document as my CFO. Surface only the financial risks and the questions I should be ready to answer.">Copy</button>
+      </div>
+      <div class="prompt-box">
+        <span class="label">Before you commit</span>
+        <p>"Pressure-test this plan. Give me the strongest case against it and the one thing most likely to go wrong."</p>
+        <button class="copy-btn" data-copy="Pressure-test this plan. Give me the strongest case against it and the one thing most likely to go wrong.">Copy</button>
+      </div>`,
+    quiz:null
+  },
+  {
+    id:'thirtydays', num:'09', title:'Your first 30 days', eyebrow:'Adoption plan',
+    dek:'Adoption dies without a habit. Four weeks, one focus each \u2014 fifteen minutes a day beats a training marathon.',
+    body:`
+      <div class="timeline">
+        <div class="tl-item"><span class="tl-week">Week 1 \u00b7 Find it</span><h4>One win a day</h4><p>Open Copilot each morning. Catch up on a thread, summarize your inbox, prep one meeting.</p></div>
+        <div class="tl-item"><span class="tl-week">Week 2 \u00b7 Inbox and meetings</span><h4>Run your day through it</h4><p>Use the Outlook prompts daily and turn every meeting into decisions and owners.</p></div>
+        <div class="tl-item"><span class="tl-week">Week 3 \u00b7 Your documents</span><h4>Word, Excel, PowerPoint</h4><p>Put Copilot on real work: a report to summarize, a spreadsheet to read, a deck to draft. Small, real tasks.</p></div>
+        <div class="tl-item"><span class="tl-week">Week 4 \u00b7 Make it yours</span><h4>Personalize and delegate</h4><p>Set your personalization, build a Chief of Staff agent, and start using it for perspective.</p></div>
+      </div>
+      <p>Fifteen minutes a day for a month turns a tool you have into a habit you trust.</p>`,
+    quiz:null
+  },
+  {
+    id:'notautopilot', num:'10', title:'Copilot, not autopilot', eyebrow:'Guardrails',
+    dek:'Trust it faster by knowing exactly where the line is. Honest expectations prevent week-two disappointment.',
+    body:`
+      <ul>
+        <li><strong>It drafts, you decide.</strong> Copilot won't send an email, book a meeting, or make a call you didn't ask for. Your name still goes on the output.</li>
+        <li><strong>Check the facts that matter.</strong> It can be confidently wrong. For numbers, names, and commitments, verify before you forward.</li>
+        <li><strong>The output is only as good as the input.</strong> A vague prompt or messy files give vague answers \u2014 the four-part formula fixes most of this.</li>
+        <li><strong>It's improving fast.</strong> Capabilities change month to month. If something felt limited in the spring, it's worth another look.</li>
+      </ul>`,
+    quiz:{
+      q:'True or false: Copilot will send an email on your behalf without you reviewing it first.',
+      options:['True','False'],
+      correct:1,
+      explain:'Copilot drafts \u2014 it never sends, books, or commits on your behalf. Your review is always the last step.'
+    }
+  },
+  {
+    id:'assistant', num:'11', title:'If you work through an assistant', eyebrow:'Delegation',
+    dek:'Most executives don\u2019t work alone. Copilot multiplies a great EA \u2014 it doesn\u2019t replace one.',
+    body:`
+      <p>Your assistant can run Copilot on the shared work you already trust them with: triaging your inbox, prepping your briefings, turning meetings into follow-ups, and drafting in a voice you've agreed on.</p>
+      <div class="card"><h3>A good first move</h3><p>Share your personalization profile with your assistant so what they produce sounds like you. Have them set up the daily brief and meeting-to-actions prompts, then hand you the output each morning.</p></div>`,
+    quiz:null
+  }
+];
+
+let currentId = null;
+let completed = new Set();
+let storageOk = true;
+
+const STORAGE_KEY = 'copilot-course-progress';
+
+async function loadProgress(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY);
+    if(res && res.value){
+      const arr = JSON.parse(res.value);
+      completed = new Set(arr);
+    }
+  }catch(e){
+    storageOk = true; // key just doesn't exist yet
+  }
+}
+
+async function saveProgress(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(Array.from(completed)));
+  }catch(e){ /* non-fatal */ }
+}
+
+function renderNav(){
+  const list = document.getElementById('nav-list');
+  list.innerHTML = MODULES.map(m => `
+    <li class="nav-item ${completed.has(m.id) ? 'done' : ''}">
+      <button class="nav-btn ${m.id===currentId ? 'active':''}" data-goto="${m.id}">
+        <span class="nav-num">${m.num}</span>
+        <span>${m.title}</span>
+        <span class="nav-stamp" aria-hidden="true">&#10003;</span>
+      </button>
+    </li>`).join('');
+  document.getElementById('progress-count').textContent = `${completed.size} / ${MODULES.length}`;
+  document.getElementById('progress-fill').style.width = `${Math.round(completed.size / MODULES.length * 100)}%`;
+
+  list.querySelectorAll('[data-goto]').forEach(btn=>{
+    btn.addEventListener('click', ()=> goTo(btn.dataset.goto));
+  });
+}
+
+function renderCover(){
+  currentId = null;
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="cover">
+      <div class="cover-eyebrow">Executive playbook &middot; 11 briefings</div>
+      <h1>Copilot does the catch-up.<br>You make the calls.</h1>
+      <p class="lede">A practical, self-paced course for getting real value from Microsoft 365 Copilot Premium in your first week \u2014 and building the habit that carries into your first thirty days.</p>
+      <p class="attrib">Adapted from the Executive Playbook by Michael Goad, Copilot Solution Engineer, Microsoft. Scope: Copilot Chat, Outlook, Word, Excel, PowerPoint, Teams.</p>
+      <button class="begin-btn" id="begin-btn">Begin the briefing &rarr;</button>
+      <div class="cover-grid">
+        <div class="cover-card"><div class="n">01&ndash;03</div><p>Why it matters, whether your data is safe, and where to find it.</p></div>
+        <div class="cover-card"><div class="n">04&ndash;08</div><p>Your first win, the prompt formula, and hands-on use by app.</p></div>
+        <div class="cover-card"><div class="n">09&ndash;11</div><p>A thirty-day plan, honest guardrails, and working through an assistant.</p></div>
+      </div>
+    </div>`;
+  document.getElementById('begin-btn').addEventListener('click', ()=> goTo(MODULES[0].id));
+  renderNav();
+}
+
+function renderModule(mod){
+  currentId = mod.id;
+  const idx = MODULES.findIndex(m=>m.id===mod.id);
+  const prev = MODULES[idx-1];
+  const next = MODULES[idx+1];
+  const isDone = completed.has(mod.id);
+
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <h2 class="sr-only">${mod.title} \u2014 module ${mod.num} of the Copilot Briefing course</h2>
+    <div class="mod-eyebrow"><span>${mod.eyebrow}</span><span>&middot;</span><span>Briefing ${mod.num} of 11</span></div>
+    <div class="mod-header">
+      <h2>${mod.title}</h2>
+      <p class="mod-dek">${mod.dek}</p>
+    </div>
+    <div class="mod-body">${mod.body}</div>
+    ${mod.quiz ? renderQuiz(mod.quiz) : ''}
+    <div class="mod-footer">
+      <div class="foot-nav">
+        <button class="btn" id="prev-btn" ${prev? '' : 'disabled'}>&larr; Previous</button>
+        <button class="btn" id="next-btn" ${next? '' : 'disabled'}>Next &rarr;</button>
+      </div>
+      <button class="btn btn-complete ${isDone?'is-done':''}" id="complete-btn">
+        <span class="stamp-mark">${isDone ? '&#10003;' : ''}</span>
+        <span>${isDone ? 'Marked complete' : 'Mark complete'}</span>
+      </button>
+    </div>`;
+
+  if(prev) document.getElementById('prev-btn').addEventListener('click', ()=> goTo(prev.id));
+  if(next) document.getElementById('next-btn').addEventListener('click', ()=> goTo(next.id));
+  document.getElementById('complete-btn').addEventListener('click', async ()=>{
+    completed.add(mod.id);
+    await saveProgress();
+    renderNav();
+    renderModule(mod);
+    if(completed.size === MODULES.length){
+      setTimeout(()=> renderCompletion(), 350);
+    }else if(next){
+      setTimeout(()=> goTo(next.id), 350);
+    }
+  });
+
+  wireCopyButtons(main);
+  if(mod.id === 'formula') wireBuilder();
+
+  main.scrollIntoView({behavior:'instant', block:'start'});
+  window.scrollTo(0,0);
+}
+
+function renderQuiz(quiz){
+  return `
+    <div class="quiz">
+      <div class="qhead"><span>&#128220;</span><span>Check yourself</span></div>
+      <p class="qtext">${quiz.q}</p>
+      <div id="quiz-opts">
+        ${quiz.options.map((opt,i)=>`<button class="qopt" data-idx="${i}">${opt}</button>`).join('')}
+      </div>
+      <p class="qexplain" id="quiz-explain">${quiz.explain}</p>
+    </div>`;
+}
+
+function wireQuiz(mod){
+  const wrap = document.getElementById('quiz-opts');
+  if(!wrap) return;
+  wrap.querySelectorAll('.qopt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = Number(btn.dataset.idx);
+      wrap.querySelectorAll('.qopt').forEach(b=> b.disabled = true);
+      if(idx === mod.quiz.correct){
+        btn.classList.add('correct');
+      }else{
+        btn.classList.add('wrong');
+        wrap.querySelectorAll('.qopt')[mod.quiz.correct].classList.add('correct');
+      }
+      document.getElementById('quiz-explain').classList.add('show');
+    });
+  });
+}
+
+function wireCopyButtons(scope){
+  scope.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const text = btn.dataset.copy;
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); }catch(err){}
+        document.body.removeChild(ta);
+      }
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+    });
+  });
+}
+
+function wireBuilder(){
+  const fields = ['b-goal','b-context','b-source','b-format'];
+  const preview = document.getElementById('b-preview');
+  function update(){
+    const goal = document.getElementById('b-goal').value.trim();
+    const context = document.getElementById('b-context').value.trim();
+    const source = document.getElementById('b-source').value.trim();
+    const format = document.getElementById('b-format').value.trim();
+    const parts = [goal, context, source, format].filter(Boolean);
+    preview.textContent = parts.length ? parts.join(', ') + '.' : 'Your assembled prompt will appear here as you type.';
+  }
+  fields.forEach(id=> document.getElementById(id).addEventListener('input', update));
+}
+
+function renderCompletion(){
+  currentId = 'complete';
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="completion">
+      <div class="seal">Briefing<br>complete</div>
+      <div class="cover-eyebrow">All 11 briefings reviewed</div>
+      <h1 style="font-size:34px;font-weight:500;margin:0 0 14px;">You're ready to run on Copilot.</h1>
+      <p class="lede" style="font-size:15.5px;">You've covered the full course \u2014 from where to find Copilot to building a Chief of Staff agent and knowing exactly where the guardrails sit. The habit now matters more than the feature list: fifteen minutes a day, starting tomorrow morning.</p>
+      <div class="card">
+        <h3>One last resource</h3>
+        <p>Michael Goad, Copilot Solution Engineer at Microsoft, offers a live 45-minute working session for teams: setting up personalization, building a Chief of Staff agent, and getting each leader a first real win. Reach him at michaelgoad@microsoft.com.</p>
+      </div>
+      <ul class="resource-list">
+        <li><span>Copilot Prompt Gallery</span><span>Browse prompts by role</span></li>
+        <li><span>Copilot Personalization guide</span><span>Set your profile</span></li>
+        <li><span>Copilot Memory</span><span>What's worth saving</span></li>
+        <li><span>Copilot Governance</span><span>For IT and security</span></li>
+      </ul>
+      <div class="mod-footer" style="border-top:none;padding-top:26px;">
+        <button class="btn" id="revisit-btn">Revisit any briefing &larr;</button>
+      </div>
+    </div>`;
+  document.getElementById('revisit-btn').addEventListener('click', ()=> renderCover());
+  window.scrollTo(0,0);
+}
+
+function goTo(id){
+  const mod = MODULES.find(m=>m.id===id);
+  if(!mod) return;
+  renderModule(mod);
+  renderNav();
+  const q = mod.quiz;
+  if(q) wireQuiz(mod);
+}
+
+(async function init(){
+  await loadProgress();
+  if(completed.size === MODULES.length){
+    renderNav();
+    renderCompletion();
+  }else{
+    renderCover();
+  }
+})();
+</script>
+</body>
+</html>
